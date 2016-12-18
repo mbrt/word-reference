@@ -34,21 +34,26 @@ class Parser(HTMLParser):
             self.state_data.pop()
 
     def handle_data(self, data):
-        if self._is_state("accent_data"):
+        if self._is_state("accent-data"):
             self._handle_accent(data, self._state_data())
 
     def _is_state(self, expected):
-        return expected in self.state
+        return len(self.state) and self.state[-1] == expected
 
     def _set_state(self, state, data=None):
+        print("set state {} to {}".format(state, data))
         self.state.append(state)
         self.state_data.append(data)
 
     def _state_data(self):
+        print("get state {} data {}".format(self.state[-1],
+                                            self.state_data[-1]))
+        print("overall state {} and data {}".format(self.state,
+                                                    self.state_data))
         self.state_data[-1]
 
     def _handle_accent(self, name, val):
-        print("{}, {}".format(name, val))
+        # print("{}, {}".format(name, val))
         if name in ACCENTS:
             self.accent_vals[name] = val
 
