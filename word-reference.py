@@ -36,6 +36,7 @@
 
 import sys
 import requests
+from subprocess import PIPE, Popen
 from html.parser import HTMLParser
 
 
@@ -143,6 +144,10 @@ def find_attr(attrs, name):
     return None
 
 
+def play(url):
+    Popen(["ffplay", "-nodisp", "-autoexit", url], stdout=PIPE, stderr=PIPE).communicate()
+
+
 def handle(word):
     r = requests.get(DEF_BASE_URL + word)
     if r.status_code != 200:
@@ -152,7 +157,10 @@ def handle(word):
     for accent in ACCENTS:
         if accent in parser.parsed.accent_vals:
             url = parser.parsed.url_for_accent(accent)
-            print("Found audio for accent {}: {}".format(accent, url))
+            print("Playing {} accent for '{}'".format(accent, word))
+            play(url)
+            return
+    print("No valid accent found for word")
 
 
 def main():
